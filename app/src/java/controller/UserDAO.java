@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import model.User;
 import java.util.ArrayList;
+import utility.ConnectionManager;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -26,7 +27,7 @@ public class UserDAO {
     }
     
     private ArrayList<User> readDatabase(){
-        ArrayList<User> userList = new ArrayList<>();
+        ArrayList<User> tempUserList = new ArrayList<>();
         try(Connection conn = ConnectionManager.getConnection();){
             PreparedStatement stmt = conn.prepareStatement("Select * from USERS");
             ResultSet rs = stmt.executeQuery("Select * from USERS");
@@ -36,13 +37,13 @@ public class UserDAO {
                 String name = rs.getString(++counter);
                 String userClass = rs.getString(++counter);
                 String userGroup = rs.getString(++counter);
-                userList.add(new User(nric,name,userClass,userGroup));
+                tempUserList.add(new User(nric,name,userClass,userGroup));
             }
         }
         catch (SQLException e){
             e.printStackTrace();
         }
-        return userList;
+        return tempUserList;
     }
     
     public ArrayList<User> getUsersByClass(String userClass){
