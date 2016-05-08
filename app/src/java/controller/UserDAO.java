@@ -27,7 +27,6 @@ public class UserDAO {
     
     private ArrayList<User> readDatabase(){
         ArrayList<User> userList = new ArrayList<>();
-        //TODO read database
         try(Connection conn = ConnectionManager.getConnection();){
             PreparedStatement stmt = conn.prepareStatement("Select * from USERS");
             ResultSet rs = stmt.executeQuery("Select * from USERS");
@@ -38,27 +37,19 @@ public class UserDAO {
                 String userClass = rs.getString(++counter);
                 String userGroup = rs.getString(++counter);
                 userList.add(new User(nric,name,userClass,userGroup));
-                System.out.println("Added " + name + " " + "class: " + userClass);
             }
         }
         catch (SQLException e){
-            System.out.println("UserDAO has encountered an error: 1");
             e.printStackTrace();
         }
-        
         return userList;
     }
     
     public ArrayList<User> getUsersByClass(String userClass){
-        ArrayList<User> sortedUserList = new ArrayList<>(); 
-        System.out.println("userList size: " + userList.size());
+        ArrayList<User> sortedUserList = new ArrayList<>();
         for(User u : userList){
             if(userClass.equals(u.getUserClass())){
                 sortedUserList.add(u);
-            }
-            else{
-                System.out.println("userClass: " + userClass);
-                System.out.println("user.getUserClass(): " + u.getUserClass());
             }
         }
         return sortedUserList;
