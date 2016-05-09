@@ -4,7 +4,7 @@
     Author     : ccchia.2014
 --%>
 
-<%@page import="controller.TransactionDAO"%>
+<%@page import="model.TransactionDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -30,7 +30,7 @@
             </p>
         </div>
         <!--TODO hide forms if not staff!-->
-        <form action="newTransaction.jsp" method="post">
+        <form action="newTransaction" method="post">
             <!--TODO get variables from objects!-->
             <input type="hidden" name="staffID" value="S9876543Z">
             <input type="hidden" name="userID" value="S1234567A">
