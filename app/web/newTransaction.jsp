@@ -1,3 +1,6 @@
+<%@page import="java.sql.SQLException"%>
+<%@page import="org.joda.time.format.DateTimeFormat"%>
+<%@page import="org.joda.time.format.DateTimeFormatter"%>
 <%@page import="org.joda.time.DateTime"%>
 <%@page import="controller.StaffDAO"%>
 <%@page import="controller.UserDAO"%>
@@ -8,18 +11,17 @@
 <%
     StaffDAO staffDAO = (StaffDAO) session.getAttribute("staffDAO");
     UserDAO userDAO = (UserDAO) session.getAttribute("userDAO");
-    TransactionDAO transactionDAO = (TransactionDAO) session.getAttribute("transactionDAO");
+    //TransactionDAO transactionDAO = (TransactionDAO) session.getAttribute("transactionDAO");
+                //TODO get TransactionDAO from session attribute!
+                TransactionDAO transactionDAO = new TransactionDAO();
     
-    String requestStaffID = request.getParameter("staffID");
+    String requestStaffID = (String) request.getParameter("staffID");
     String requestUserID = request.getParameter("userID");
     String requestDelta = request.getParameter("delta");
     String requestReason = request.getParameter("reason");
     DateTime requestTimestamp = DateTime.now();
-    //TODO make sure that requestTimestamp is formatted properly!
     if(!transactionDAO.newTransaction(requestStaffID,requestUserID,requestDelta,requestReason,requestTimestamp)){
-        request.setAttribute("errorMessage", "Could not create a new transaction! Please try again later!");
+        session.setAttribute("errorMessage", "Could not create a new transaction! Please try again later!");
     }
-    //TODO enter default teacher page
-    RequestDispatcher rd = request.getRequestDispatcher("");
-    rd.forward(request, response);
+    response.sendRedirect("overview.jsp");
 %>

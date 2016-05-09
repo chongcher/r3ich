@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import model.Transaction;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import utility.ConnectionManager;
 
 /**
@@ -43,8 +45,41 @@ public class TransactionDAO {
     }
     
     public boolean newTransaction(String requestStaffID,String requestUserID,
-            String requestDelta,String requestReason,DateTime requestTimestamp){
-        //TODO add new transaction
-        return false;
+            String requestDelta,String requestReason,DateTime requestTimestamp) throws SQLException{
+        boolean success = false;
+        try(Connection conn = ConnectionManager.getConnection();){
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO TRANSACTION_DETAILS (`Staff`, `User`, `Delta`, `Reason`, `Transaction_DateTime`) VALUES (?, ?, ?, ?, ?);");
+            stmt.setString(1, requestStaffID);
+            stmt.setString(2, requestUserID);
+            stmt.setInt(3, Integer.parseInt(requestDelta));
+            stmt.setString(4, requestReason);
+            DateTimeFormatter dtf = DateTimeFormat.forPattern("Y-MM-d HH:mm:ss");
+            stmt.setString(5, requestTimestamp.toString(dtf));
+            if(stmt.executeUpdate() == 1) success = true;
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return success;
+    }
+    
+    public int getTotalPoints(String userID){
+        int totalPoints = 0;
+        try(Connection conn = ConnectionManager.getConnection();){
+            PreparedStatement stmt = conn.prepareStatement("SELECT SUM(Delta) FROM (SELECT * FROM TRANSACTION_DETAILS WHERE `User` = ?) as temp");
+            stmt.setString(1, userID);
+            ResultSet rs = stmt.executeQuery();
+            if(rs.next()){
+                int queryResult = rs.getInt(1);
+                if(queryResult > totalPoints) totalPoints = queryResult;
+                            //TODO remove this
+                                System.out.println("<TransactionDAO> stmt: " + stmt.toString());
+                                System.out.println("<TransactionDAO> queryResult: " + queryResult);
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return totalPoints;
     }
 }
