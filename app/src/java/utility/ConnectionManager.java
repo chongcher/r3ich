@@ -57,7 +57,7 @@ public class ConnectionManager {
       dbUser = props.getProperty("db.user");
       dbPassword = props.getProperty("db.password");
 
-      dbURL = "jdbc:mysql://" + host + ":" + port + "/" + dbName + "?characterEncoding=UTF-8";
+      dbURL = "jdbc:mysql://" + host + ":" + port + "/" + dbName + "?characterEncoding=UTF-8&useSSL=false";
     } catch (Exception ex) {
       // unable to load properties file
       String message = "Unable to load '" + PROPS_FILENAME + "'.";

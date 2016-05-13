@@ -72,9 +72,6 @@ public class TransactionDAO {
             if(rs.next()){
                 int queryResult = rs.getInt(1);
                 if(queryResult > totalPoints) totalPoints = queryResult;
-                            //TODO remove this
-                                System.out.println("<TransactionDAO> stmt: " + stmt.toString());
-                                System.out.println("<TransactionDAO> queryResult: " + queryResult);
             }
         }
         catch (SQLException e){

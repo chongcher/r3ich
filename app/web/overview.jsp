@@ -4,6 +4,7 @@
     Author     : ccchia.2014
 --%>
 
+<%@page import="model.UserDAO"%>
 <%@page import="model.TransactionDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -24,11 +25,19 @@
         <div>
             <p>Xiao Ming</p>
             <p>
-                            <%--TODO get transactionDAO from session!--%>
-                            <%TransactionDAO transactionDAO = new TransactionDAO();%>
+                <%
+                    //initialize required DAOs as session attributes
+                    TransactionDAO transactionDAO = new TransactionDAO();
+                    UserDAO userDAO = new UserDAO();
+                    session.setAttribute("transactionDAO", transactionDAO);
+                    session.setAttribute("userDAO", userDAO);
+                    //TODO if no user selected, prompt for userNRIC
+                    //TODO show classmates' scores
+                    //TODO show skills
+                %>
                 Points: <%= transactionDAO.getTotalPoints("S1234567A")%>
             </p>
-        </div>
+        </div>  
         <!--TODO hide forms if not staff!-->
         <form action="newTransaction" method="post">
             <!--TODO get variables from objects!-->
