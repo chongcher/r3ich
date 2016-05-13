@@ -1,7 +1,7 @@
 package model;
 
 
-import org.joda.time.DateTime;
+import java.util.ArrayList;
 
 /**
  *
@@ -11,11 +11,13 @@ public class Staff {
     private final String nric;
     private final String salutation;
     private final String name;
+    private final ArrayList<String> classes;
     
-    public Staff(String nric, String salutation, String name){
+    public Staff(String nric, String salutation, String name,ArrayList<String> classes){
         this.nric = nric;
         this.salutation = salutation;
         this.name = name;
+        this.classes = classes;
     }
     
     public String getNric(){
@@ -29,5 +31,11 @@ public class Staff {
     public String getName(){
         return name;
     }
+    
+    public ArrayList<String> getClasses(){
+        return classes;
+    }
+    
+    
     
 }

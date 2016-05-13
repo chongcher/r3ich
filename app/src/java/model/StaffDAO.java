@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import model.Staff;
 import java.util.ArrayList;
+import java.util.Arrays;
 import org.joda.time.DateTime;
 import org.mindrot.jbcrypt.BCrypt;
 import utility.ConnectionManager;
@@ -23,8 +24,22 @@ public class StaffDAO {
     }
     
     private ArrayList<Staff> readDatabase(){
-        ArrayList<Staff> staff = new ArrayList<Staff>();
-        //TODO read database
+        ArrayList<Staff> staff = new ArrayList<>();
+        try(Connection conn = ConnectionManager.getConnection();){
+            PreparedStatement stmt = conn.prepareStatement("SELECT Nric,Salutation,Name,Classes FROM STAFF");
+            ResultSet rs = stmt.executeQuery();
+            int counter = 0;
+            if(rs.next()){
+                String staffId = rs.getString(++counter);
+                String staffSalutation = rs.getString(++counter);
+                String staffName = rs.getString(++counter);
+                ArrayList<String> staffClasses = new ArrayList(Arrays.asList(rs.getString(++counter).split(",")));
+                staff.add(new Staff(staffId,staffSalutation,staffName,staffClasses));
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
         return staff;
     }
     
@@ -35,15 +50,11 @@ public class StaffDAO {
     }
     
     public boolean login(String staffId, String candidate){
-        String hash;
-        try(Connection conn = ConnectionManager.getConnection();){
-            PreparedStatement stmt = conn.prepareStatement("SELECT PasswordHash FROM STAFF WHERE Nric LIKE ?");
-            stmt.setString(1, staffId);
-            System.out.println("staffDAO stmt: " + stmt);
-            ResultSet rs = stmt.executeQuery();
+        try(Connection conn = ConnectionManager.getConnection();
+                PreparedStatement stmt = createLoginPreparedStatement(conn,staffId); 
+                ResultSet rs = stmt.executeQuery();){
             if(rs.next()){
-                String passwordHash = rs.getString(1);
-                return BCrypt.checkpw(candidate, passwordHash);
+                return BCrypt.checkpw(candidate, rs.getString(1));
             }
             else{
                 System.out.print("No results found");
@@ -62,5 +73,11 @@ public class StaffDAO {
             }
         }
         return null;
+    }
+    
+    private PreparedStatement createLoginPreparedStatement(Connection conn, String staffId) throws SQLException{
+        PreparedStatement stmt = conn.prepareStatement("SELECT PasswordHash FROM STAFF WHERE Nric LIKE ?");
+        stmt.setString(1, staffId);
+        return stmt;
     }
 }
