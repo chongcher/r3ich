@@ -55,4 +55,27 @@ public class UserDAO {
         }
         return sortedUserList;
     }
+    
+    public String getName(String userId){
+        for(User u : userList){
+            if(userId.equals(u.getNric())) return u.getName();
+        }
+        return null;
+    }
+    
+    public String getClass(String userId){
+        for(User u : userList){
+            if(userId.equals(u.getNric())) return u.getUserClass();
+        }
+        return null;
+    }
+    
+    public Boolean exists(String userId){
+        for(User u: userList){
+            if(userId.equals(u.getNric())){
+                return true;
+            }
+        }
+        return false;
+    }
 }

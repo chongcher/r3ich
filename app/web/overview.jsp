@@ -4,6 +4,8 @@
     Author     : ccchia.2014
 --%>
 
+<%@page import="model.User"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="model.UserDAO"%>
 <%@page import="model.TransactionDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -14,38 +16,67 @@
         <title>Overview</title>
     </head>
     <body>
+        <%
+            if(session.getAttribute("errorMessage") != null){
+                out.println("<p>" + session.getAttribute("errorMessage") + "</p>");
+                session.setAttribute("errorMessage", null);
+            }
+            if(null == session.getAttribute("userId") && null == request.getAttribute("userId")){
+        %>
         <div>
-            <%
-                if(session.getAttribute("errorMessage") != null){
-                    out.println("<p>" + session.getAttribute("errorMessage") + "</p>");
-                    session.setAttribute("errorMessage", null);
-                }
-            %>
-        </div>
-        <div>
-            <p>Xiao Ming</p>
             <p>
-                <%
-                    //initialize required DAOs as session attributes
-                    TransactionDAO transactionDAO = new TransactionDAO();
-                    UserDAO userDAO = new UserDAO();
-                    session.setAttribute("transactionDAO", transactionDAO);
-                    session.setAttribute("userDAO", userDAO);
-                    //TODO if no user selected, prompt for userNRIC
-                    //TODO show classmates' scores
-                    //TODO show skills
-                %>
-                Points: <%= transactionDAO.getTotalPoints("S1234567A")%>
+                <form action="overview.jsp" method="get">
+                    Student ID <input name="userId">
+                    <button type="submit">View my points!</button>
+                </form>
             </p>
-        </div>  
-        <!--TODO hide forms if not staff!-->
-        <form action="newTransaction" method="post">
-            <!--TODO get variables from objects!-->
-            <input type="hidden" name="staffID" value="S9876543Z">
-            <input type="hidden" name="userID" value="S1234567A">
-            <input type="hidden" name="delta" value="5">
-            <input type="hidden" name="reason" value="Correct answer in class">
-            <button type="submit">Correct Answer</button>
-        </form>
+        </div>
+        <%
+                return;
+            }
+            else{
+                String userId = (String) session.getAttribute("userId");
+                if(null == userId){
+                    userId = (String) request.getParameter("userId");
+                    session.setAttribute("userId", userId);
+                }
+                session.setAttribute("transactionDAO", new TransactionDAO());
+                session.setAttribute("userDAO", new UserDAO());
+            }
+            TransactionDAO transactionDAO = (TransactionDAO) session.getAttribute("transactionDAO");
+            UserDAO userDAO = (UserDAO) session.getAttribute("userDAO");
+            String userId = (String) session.getAttribute("userId");
+            if(!userDAO.exists("userId")){
+                session.setAttribute("errorMessage","Unknown ID! Please try again!");
+                session.setAttribute("userId", null);
+                response.sendRedirect("overview.jsp");
+                return;
+            }
+        %>
+        <div>
+            <p>
+                Hi <%= userDAO.getName(userId) %> !
+                </br>Current points: <%= transactionDAO.getTotalPoints(userId) %>
+                <!--TODO show classmates' scores
+                //TODO show skills-->
+            </p>
+            <p>
+                <u>Top of the class</u>
+            </p>
+        <%
+            String userClass = userDAO.getClass(userId);
+            ArrayList<User> classlist = userDAO.getUsersByClass(userClass);
+            final int usersToDisplay = 5;
+            int currentlyDisplayed = 0;
+            while(currentlyDisplayed < usersToDisplay){
+                int tmpTopScore = 0;
+                ArrayList<User> usersWithTopScore = new ArrayList<>();
+                for(User u: classlist){
+                    //if(transactionDAO.getTotalPoints(userID))
+                    //TODO too expensive! Use SQL to do this instead!
+                }
+            }
+        %>
+        </div>
     </body>
 </html>
