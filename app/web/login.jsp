@@ -13,12 +13,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <script src="http://cdn.rawgit.com/h2non/jsHashes/master/hashes.js"></script>
+        <script src="hashes.js"></script><!-- taken from http://cdn.rawgit.com/h2non/jsHashes/master/hashes.js on 23/05/2016 -->
         <%
-            String errorMsg = (String) session.getAttribute("errorMessage");
+            String errorMsg = (String) session.getAttribute("displayMessage");
             if(errorMsg != null){
                 out.println("<p><h2>" + errorMsg + "</h2></p>");
-                session.setAttribute("errorMessage",null);
+                session.setAttribute("displayMessage" , null);
             }
         %>
         <form id="loginForm" action="loginServlet" method="post">
@@ -30,7 +30,7 @@
         <script>
             function hashPassword(){
                 var unhashed = document.getElementById("unhashed");
-                var MD5 = new Hashes.MD5().hex(candidate.value) //https://github.com/h2non/jshashes
+                var MD5 = new Hashes.MD5().hex(unhashed.value); //https://github.com/h2non/jshashes
                 document.getElementById("candidate").value = MD5;
                 document.getElementById("loginForm").submit();
             }

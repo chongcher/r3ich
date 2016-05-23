@@ -48,9 +48,10 @@ public class newTransactionServlet extends HttpServlet {
             String requestReason = request.getParameter("reason");
             DateTime requestTimestamp = DateTime.now();            
             if(!transactionDAO.newTransaction(requestStaffID,requestUserID,requestDelta,requestReason,requestTimestamp)){
-                session.setAttribute("errorMessage", "Could not create a new transaction! Please try again later!");
+                session.setAttribute("displayMessage", "Could not create a new transaction! Please try again later!");
             }
             response.sendRedirect("overview.jsp");
+            return;
         }
         catch(SQLException e){
             e.printStackTrace();

@@ -17,9 +17,9 @@
     </head>
     <body>
         <%
-            if(session.getAttribute("errorMessage") != null){
-                out.println("<p>" + session.getAttribute("errorMessage") + "</p>");
-                session.setAttribute("errorMessage", null);
+            if(session.getAttribute("displayMessage") != null){
+                out.println("<p>" + session.getAttribute("displayMessage") + "</p>");
+                session.setAttribute("displayMessage", null);
             }
             if(null == session.getAttribute("userId") && null == request.getAttribute("userId")){
         %>
@@ -47,7 +47,7 @@
             UserDAO userDAO = (UserDAO) session.getAttribute("userDAO");
             String userId = (String) session.getAttribute("userId");
             if(!userDAO.exists("userId")){
-                session.setAttribute("errorMessage","Unknown ID! Please try again!");
+                session.setAttribute("displayMessage","Unknown ID! Please try again!");
                 session.setAttribute("userId", null);
                 response.sendRedirect("overview.jsp");
                 return;

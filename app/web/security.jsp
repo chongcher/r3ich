@@ -9,7 +9,7 @@
 <%
     Staff staff = (Staff) session.getAttribute("staff");
     if(null == staff){
-        session.setAttribute("errorMessage", "Please log in!");
+        session.setAttribute("displayMessage", "Please log in!");
         response.sendRedirect("login.jsp");
         return;
     }

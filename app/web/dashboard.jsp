@@ -14,6 +14,13 @@
         <title>Staff Dashboard</title>
     </head>
     <body>
+        <%
+            String errorMsg = (String) session.getAttribute("displayMessage");
+            if(errorMsg != null){
+                out.println("<p><h2>" + errorMsg + "</h2></p>");
+                session.setAttribute("displayMessage" , null);
+            }
+        %>
         <!--TODO implement user verification and error page!-->
         <div>
             <form action="classOverview.jsp" method="get">
@@ -29,7 +36,9 @@
             </form>
         </div>
         <div>
-            <button>Change Password (Not working!)</button>
+            <form action="changePassword.jsp" method="post">
+                <button type="submit">Change Password</button>
+            </form>
         </div>
         <%
             if(((Staff)session.getAttribute("staff")).getNric().equals("asd")){

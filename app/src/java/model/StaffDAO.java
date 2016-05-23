@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import model.Staff;
 import java.util.ArrayList;
 import java.util.Arrays;
 import org.joda.time.DateTime;
@@ -75,9 +74,37 @@ public class StaffDAO {
         return null;
     }
     
+    public Boolean changePassword(String staffId, String candidate){
+        String newHash = BCrypt.hashpw(candidate, BCrypt.gensalt(8));
+        Boolean committedTransaction = false;
+        try(Connection conn = ConnectionManager.getConnection();
+                PreparedStatement stmt = createChangePasswordPreparedStatement(conn, staffId, newHash);){
+            conn.setAutoCommit(false);
+            int rowsUpdated = stmt.executeUpdate();
+            if(rowsUpdated != 1){
+                System.out.println("StaffDAO: changePassword() returned more than 1 row!\nstaffId == " + staffId + "\ncandidate: " + candidate);
+            }
+            else{
+                conn.commit();
+                committedTransaction = true;
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return committedTransaction;
+    }
+    
     private PreparedStatement createLoginPreparedStatement(Connection conn, String staffId) throws SQLException{
         PreparedStatement stmt = conn.prepareStatement("SELECT PasswordHash FROM STAFF WHERE Nric LIKE ?");
         stmt.setString(1, staffId);
+        return stmt;
+    }
+
+    private PreparedStatement createChangePasswordPreparedStatement(Connection conn, String staffId, String candidate) throws SQLException{
+        PreparedStatement stmt = conn.prepareStatement("UPDATE STAFF SET PasswordHash = ? WHERE Nric LIKE ?");
+        stmt.setString(1, candidate);
+        stmt.setString(2, staffId);
         return stmt;
     }
 }
