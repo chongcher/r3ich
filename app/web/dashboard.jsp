@@ -40,6 +40,14 @@
                 <button type="submit">Change Password</button>
             </form>
         </div>
+        <div>
+            <button id="logoutButton">Logout</button>
+            <script type="text/javascript">
+                document.getElementById("logoutButton").onclick = function(){
+                    location.href = "${pageContext.request.contextPath}/logoutServlet";
+                }
+            </script>
+        </div>
         <%
             if(((Staff)session.getAttribute("staff")).getNric().equals("asd")){
         %>

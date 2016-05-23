@@ -31,6 +31,14 @@
                 </form>
             </p>
         </div>
+        <div>
+            <button id="staffLoginButton">Staff Login</button>
+            <script type="text/javascript">
+                document.getElementById("staffLoginButton").onclick = function(){
+                    location.href = "login.jsp";
+                }
+            </script>
+        </div>
         <%
                 return;
             }

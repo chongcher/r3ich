@@ -12,6 +12,10 @@
         <servlet-name>changePasswordServlet</servlet-name>
         <servlet-class>controller.changePasswordServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>logoutServlet</servlet-name>
+        <servlet-class>controller.logoutServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>newTransactionServlet</servlet-name>
         <url-pattern>/newTransaction</url-pattern>
@@ -23,6 +27,10 @@
     <servlet-mapping>
         <servlet-name>changePasswordServlet</servlet-name>
         <url-pattern>/changePasswordServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>logoutServlet</servlet-name>
+        <url-pattern>/logoutServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
