@@ -29,15 +29,22 @@ public class UserDAO {
     private ArrayList<User> readDatabase(){
         ArrayList<User> tempUserList = new ArrayList<>();
         try(Connection conn = ConnectionManager.getConnection();){
-            PreparedStatement stmt = conn.prepareStatement("Select * from USERS");
-            ResultSet rs = stmt.executeQuery("Select * from USERS");
-            int counter = 0;
+            PreparedStatement stmt = conn.prepareStatement("Select * FROM users");
+            ResultSet rs = stmt.executeQuery("Select * FROM users");
             while(rs.next()){
+                int counter = 0;
                 String nric = rs.getString(++counter);
                 String name = rs.getString(++counter);
                 String userClass = rs.getString(++counter);
                 String userGroup = rs.getString(++counter);
-                tempUserList.add(new User(nric,name,userClass,userGroup));
+                int respectLevel = rs.getInt(++counter);
+                int resilienceLevel = rs.getInt(++counter);
+                int responsibilityLevel = rs.getInt(++counter);
+                int integrityLevel = rs.getInt(++counter);
+                int careLevel = rs.getInt(++counter);
+                int harmonyLevel = rs.getInt(++counter);
+                tempUserList.add(new User(nric,name,userClass,userGroup,
+                        respectLevel,resilienceLevel,responsibilityLevel,integrityLevel,careLevel,harmonyLevel));
             }
         }
         catch (SQLException e){

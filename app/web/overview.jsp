@@ -78,7 +78,7 @@
             int currentlyDisplayed = 0;
             while(currentlyDisplayed < usersToDisplay){
                 int tmpTopScore = 0;
-                ArrayList<User> usersWithTopScore = new ArrayList<>();
+                ArrayList<User> usersWithTopScore = new ArrayList<User>();
                 for(User u: classlist){
                     //if(transactionDAO.getTotalPoints(userID))
                     //TODO too expensive! Use SQL to do this instead!

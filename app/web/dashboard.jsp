@@ -41,6 +41,11 @@
             </form>
         </div>
         <div>
+            <form action="addStaff.jsp" method="post">
+                <button type="submit">Add Staff</button>
+            </form>
+        </div>
+        <div>
             <button id="logoutButton">Logout</button>
             <script type="text/javascript">
                 document.getElementById("logoutButton").onclick = function(){
@@ -48,17 +53,5 @@
                 }
             </script>
         </div>
-        <%
-            if(((Staff)session.getAttribute("staff")).getNric().equals("asd")){
-        %>
-                <div>
-                    Add admin functions
-                    eg. Add staff
-                    <!--TODO add functionality!-->
-                </div>
-        <%
-                
-            }
-        %>
     </body>
 </html>

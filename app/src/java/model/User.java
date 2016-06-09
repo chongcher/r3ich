@@ -18,12 +18,25 @@ public class User {
     private String nric;
     private String name;
     private String userClass;
+    private int respectLevel;
+    private int resilienceLevel;
+    private int responsibilityLevel;
+    private int integrityLevel;
+    private int careLevel;
+    private int harmonyLevel;
     private ArrayList<String> groupList;
 
-    public User(String nric, String name, String userClass, String userGroup) {
+    public User(String nric, String name, String userClass, String userGroup, int respectLevel, 
+            int resilienceLevel, int responsibilityLevel, int integrityLevel, int careLevel, int harmonyLevel) {
         this.nric = nric;
         this.name = name;
         this.userClass = userClass;
+        this.respectLevel = respectLevel;
+        this.resilienceLevel = resilienceLevel;
+        this.responsibilityLevel = responsibilityLevel;
+        this.integrityLevel = integrityLevel;
+        this.careLevel = careLevel;
+        this.harmonyLevel = harmonyLevel;
         groupList = new ArrayList<>(Arrays.asList(userGroup.split(",")));
     }
 

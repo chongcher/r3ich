@@ -16,6 +16,10 @@
         <servlet-name>logoutServlet</servlet-name>
         <servlet-class>controller.logoutServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>addStaffServlet</servlet-name>
+        <servlet-class>controller.addStaffServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>newTransactionServlet</servlet-name>
         <url-pattern>/newTransaction</url-pattern>
@@ -31,6 +35,10 @@
     <servlet-mapping>
         <servlet-name>logoutServlet</servlet-name>
         <url-pattern>/logoutServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>addStaffServlet</servlet-name>
+        <url-pattern>/addStaffServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

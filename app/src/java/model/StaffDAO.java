@@ -8,7 +8,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import org.joda.time.DateTime;
-import org.mindrot.jbcrypt.BCrypt;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import utility.BCrypt;
 import utility.ConnectionManager;
 
 /**
@@ -23,16 +25,20 @@ public class StaffDAO {
     }
     
     private ArrayList<Staff> readDatabase(){
-        ArrayList<Staff> staff = new ArrayList<>();
+        ArrayList<Staff> staff = new ArrayList<Staff>();
         try(Connection conn = ConnectionManager.getConnection();){
-            PreparedStatement stmt = conn.prepareStatement("SELECT Nric,Salutation,Name,Classes FROM STAFF");
+            PreparedStatement stmt = conn.prepareStatement("SELECT Nric,Salutation,Name,Classes FROM staff");
             ResultSet rs = stmt.executeQuery();
-            int counter = 0;
-            if(rs.next()){
+            while(rs.next()){
+                int counter = 0;
                 String staffId = rs.getString(++counter);
                 String staffSalutation = rs.getString(++counter);
                 String staffName = rs.getString(++counter);
-                ArrayList<String> staffClasses = new ArrayList(Arrays.asList(rs.getString(++counter).split(",")));
+                String classes = rs.getString(++counter);
+                ArrayList<String> staffClasses = new ArrayList();
+                if(null != classes && !"".equals(classes)){
+                    staffClasses = new ArrayList<String>(Arrays.asList(classes.split(",")));
+                }
                 staff.add(new Staff(staffId,staffSalutation,staffName,staffClasses));
             }
         }
@@ -48,16 +54,41 @@ public class StaffDAO {
         return (false);
     }
     
-    public boolean login(String staffId, String candidate){
+    /*public boolean login(String staffId, String candidate){
+            System.out.println("StaffDAO login 0");
         try(Connection conn = ConnectionManager.getConnection();
                 PreparedStatement stmt = createLoginPreparedStatement(conn,staffId); 
                 ResultSet rs = stmt.executeQuery();){
+            System.out.println("StaffDAO login 1: " + candidate);
             if(rs.next()){
-                return BCrypt.checkpw(candidate, rs.getString(1));
+                System.out.println("StaffDAO login 2");
+                String res = rs.getString(1);
+                System.out.println("StaffDAO login 2: " + res + " bool: " + BCrypt.checkpw(candidate, res));
+                return BCrypt.checkpw(candidate, res);
             }
             else{
-                System.out.print("No results found");
+                System.out.println("StaffDAO login else");
             }
+        }
+        catch (SQLException e){
+            System.out.println("StaffDAO login 4: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false; //if rs.next() != true
+    }*/
+    
+    public boolean login(String staffId, String candidate){
+        try{
+            Connection conn = ConnectionManager.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("SELECT PasswordHash FROM staff WHERE Nric LIKE ?");
+            stmt.setString(1, staffId); 
+            ResultSet rs = stmt.executeQuery();
+            if(rs.next()){
+                String res = rs.getString(1);
+                return BCrypt.checkpw(candidate, res);
+            }
+            stmt.close();
+            conn.close();
         }
         catch (SQLException e){
             e.printStackTrace();
@@ -67,6 +98,7 @@ public class StaffDAO {
 
     public Staff retrieveStaff(String staffId) {
         for(Staff s: staff){
+            System.out.println("StaffDAO retrieve staff: " + s.getNric());
             if(staffId.equals(s.getNric())){
                 return s;
             }
@@ -75,7 +107,7 @@ public class StaffDAO {
     }
     
     public Boolean changePassword(String staffId, String candidate){
-        String newHash = BCrypt.hashpw(candidate, BCrypt.gensalt(8));
+        String newHash = BCrypt.hashpw(candidate, BCrypt.gensalt());
         Boolean committedTransaction = false;
         try(Connection conn = ConnectionManager.getConnection();
                 PreparedStatement stmt = createChangePasswordPreparedStatement(conn, staffId, newHash);){
@@ -96,15 +128,33 @@ public class StaffDAO {
     }
     
     private PreparedStatement createLoginPreparedStatement(Connection conn, String staffId) throws SQLException{
-        PreparedStatement stmt = conn.prepareStatement("SELECT PasswordHash FROM STAFF WHERE Nric LIKE ?");
+        PreparedStatement stmt = conn.prepareStatement("SELECT PasswordHash FROM staff WHERE Nric LIKE ?");
         stmt.setString(1, staffId);
         return stmt;
     }
 
     private PreparedStatement createChangePasswordPreparedStatement(Connection conn, String staffId, String candidate) throws SQLException{
-        PreparedStatement stmt = conn.prepareStatement("UPDATE STAFF SET PasswordHash = ? WHERE Nric LIKE ?");
+        PreparedStatement stmt = conn.prepareStatement("UPDATE staff SET PasswordHash = ? WHERE Nric LIKE ?");
         stmt.setString(1, candidate);
         stmt.setString(2, staffId);
         return stmt;
+    }
+
+    public boolean addStaff(String staffUserName, String staffSalutation, String staffName, String newCandidate) {
+        int updatedRows = -1;
+        try(Connection conn = ConnectionManager.getConnection();){
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO staff (Nric, Salutation, Name, PasswordHash, Last_Updated) VALUES (?,?,?,?,?)");
+            stmt.setString(1, staffUserName);
+            stmt.setString(2, staffSalutation);
+            stmt.setString(3, staffName);
+            stmt.setString(4, BCrypt.hashpw(newCandidate, BCrypt.gensalt()));
+            DateTimeFormatter dtf = DateTimeFormat.forPattern("Y-M-d");
+            stmt.setString(5, DateTime.now().toString(dtf));
+            updatedRows = stmt.executeUpdate();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return (1 == updatedRows);
     }
 }

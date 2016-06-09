@@ -12,14 +12,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import model.Staff;
 import model.StaffDAO;
 
 /**
  *
  * @author ccchia.2014
  */
-public class changePasswordServlet extends HttpServlet {
+public class addStaffServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,29 +34,21 @@ public class changePasswordServlet extends HttpServlet {
         //response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
         try (PrintWriter out = response.getWriter()) {
-            String currentPassword = (String) request.getParameter("currentPassword"); //name must be declared in JSP!
-            String newCandidate = (String) request.getParameter("newCandidate");
-            Staff staff;
-            staff = (Staff) session.getAttribute("staff");
+            String newCandidate = (String) request.getParameter("newCandidate"); //name must be declared in JSP!
+            String staffUserName = (String) request.getParameter("staffUserName"); //name must be declared in JSP!
+            String staffSalutation = (String) request.getParameter("staffSalutation"); //name must be declared in JSP!
+            String staffName = (String) request.getParameter("staffName"); //name must be declared in JSP!
             StaffDAO staffDAO = (StaffDAO) session.getAttribute("staffDAO");
-            if(null == staffDAO /*|| !staffDAO.login(staff.getNric(), currentPassword)*/){
-                session.setAttribute("displayMessage", "Please log in before changing your password!");
-                response.sendRedirect("login.jsp");
-                return;
+            //TODO automatically update date using Jodatime?
+            if(!staffDAO.addStaff(staffUserName, staffSalutation, staffName, newCandidate)){
+                session.setAttribute("displayMessage", "Could not add staff! Please contact an adminstrator!");
             }
             else{
-                boolean passwordChangeSuccessfully = staffDAO.changePassword(staff.getNric(), newCandidate);
-                if(passwordChangeSuccessfully){
-                    session.setAttribute("displayMessage", "Password has been successfully changed!");
-                    response.sendRedirect("dashboard.jsp");
-                    return;
-                }
-                else{
-                    session.setAttribute("displayMessage", "An unknown error has occured! Your password has not been changed. Please inform an admininstrator!");
-                    response.sendRedirect("dashboard.jsp");
-                    return;
-                }
+                session.setAttribute("displayMessage", "Added staff successfully!");
+                session.setAttribute("staffDAO", new StaffDAO());
             }
+            response.sendRedirect("dashboard.jsp");
+            return;
         }
         catch(Exception e){
             e.printStackTrace();

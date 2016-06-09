@@ -34,7 +34,7 @@ public class ConnectionManager {
     // this is production environment
     // obtain database connection properties from environment variables
     String port = System.getenv("OPENSHIFT_MYSQL_DB_PORT");
-    String dbName = "r3ise";
+    String dbName = "r3ich";
     dbUser = System.getenv("OPENSHIFT_MYSQL_DB_USERNAME");
     dbPassword = System.getenv("OPENSHIFT_MYSQL_DB_PASSWORD");
 
