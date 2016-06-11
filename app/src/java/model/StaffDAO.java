@@ -98,7 +98,6 @@ public class StaffDAO {
 
     public Staff retrieveStaff(String staffId) {
         for(Staff s: staff){
-            System.out.println("StaffDAO retrieve staff: " + s.getNric());
             if(staffId.equals(s.getNric())){
                 return s;
             }

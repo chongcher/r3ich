@@ -53,6 +53,29 @@ public class UserDAO {
         return tempUserList;
     }
     
+    public Boolean addNewUser(String userNric, String userName, String userClass){
+        int updatedRows = -1;
+        try(Connection conn = ConnectionManager.getConnection();){
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO users (`Nric`, `Name`, `Class`, `Group`, `Respect_Level`, "
+                    + "`Resilience_Level`, `Responsibility_Level`, `Integrity_Level`, `Care_Level`, `Harmony_Level`) VALUES (?,?,?,?,?,?,?,?,?,?)");
+            stmt.setString(1, userNric);
+            stmt.setString(2, userName);
+            stmt.setString(3, userClass);
+            stmt.setString(4, "");
+            stmt.setInt(5, 0);
+            stmt.setInt(6, 0);
+            stmt.setInt(7, 0);
+            stmt.setInt(8, 0);
+            stmt.setInt(9, 0);
+            stmt.setInt(10, 0);
+            updatedRows = stmt.executeUpdate();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return (1 == updatedRows);
+    }
+    
     public ArrayList<User> getUsersByClass(String userClass){
         ArrayList<User> sortedUserList = new ArrayList<>();
         for(User u : userList){

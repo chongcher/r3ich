@@ -21,7 +21,6 @@
                 session.setAttribute("displayMessage" , null);
             }
         %>
-        <!--TODO implement user verification and error page!-->
         <div>
             <form action="classOverview.jsp" method="get">
                 Select a class 

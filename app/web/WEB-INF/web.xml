@@ -20,6 +20,10 @@
         <servlet-name>addStaffServlet</servlet-name>
         <servlet-class>controller.addStaffServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>addStudentServlet</servlet-name>
+        <servlet-class>controller.addStudentServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>newTransactionServlet</servlet-name>
         <url-pattern>/newTransaction</url-pattern>
@@ -39,6 +43,10 @@
     <servlet-mapping>
         <servlet-name>addStaffServlet</servlet-name>
         <url-pattern>/addStaffServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>addStudentServlet</servlet-name>
+        <url-pattern>/addStudentServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
