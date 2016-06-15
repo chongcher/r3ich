@@ -50,7 +50,8 @@ public class newTransactionServlet extends HttpServlet {
             if(!transactionDAO.newTransaction(requestStaffID,requestUserID,requestDelta,requestReason,requestTimestamp)){
                 session.setAttribute("displayMessage", "Could not create a new transaction! Please try again later!");
             }
-            response.sendRedirect("overview.jsp");
+            String selectedClass = request.getParameter("selectedClass");
+            response.sendRedirect("classOverview.jsp?selectedClass=" + selectedClass);
             return;
         }
         catch(SQLException e){

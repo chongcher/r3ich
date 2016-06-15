@@ -37,5 +37,10 @@
             </table>
             <button type="submit">Add new student</button>
         </form>
+        <div>
+            <form action="dashboard.jsp" method="post">
+                <button type="submit">Back to dashboard</button>
+            </form>
+        </div>
     </body>
 </html>

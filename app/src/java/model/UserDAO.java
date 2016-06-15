@@ -29,8 +29,8 @@ public class UserDAO {
     private ArrayList<User> readDatabase(){
         ArrayList<User> tempUserList = new ArrayList<>();
         try(Connection conn = ConnectionManager.getConnection();){
-            PreparedStatement stmt = conn.prepareStatement("Select * FROM users");
-            ResultSet rs = stmt.executeQuery("Select * FROM users");
+            PreparedStatement stmt = conn.prepareStatement("Select * FROM USERS");
+            ResultSet rs = stmt.executeQuery("Select * FROM USERS");
             while(rs.next()){
                 int counter = 0;
                 String nric = rs.getString(++counter);
@@ -56,7 +56,7 @@ public class UserDAO {
     public Boolean addNewUser(String userNric, String userName, String userClass){
         int updatedRows = -1;
         try(Connection conn = ConnectionManager.getConnection();){
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO users (`Nric`, `Name`, `Class`, `Group`, `Respect_Level`, "
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO USERS (`Nric`, `Name`, `Class`, `Group`, `Respect_Level`, "
                     + "`Resilience_Level`, `Responsibility_Level`, `Integrity_Level`, `Care_Level`, `Harmony_Level`) VALUES (?,?,?,?,?,?,?,?,?,?)");
             stmt.setString(1, userNric);
             stmt.setString(2, userName);

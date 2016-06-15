@@ -45,6 +45,11 @@
             </form>
         </div>
         <div>
+            <form action="addStudent.jsp" method="post">
+                <button type="submit">Add Student</button>
+            </form>
+        </div>
+        <div>
             <button id="logoutButton">Logout</button>
             <script type="text/javascript">
                 document.getElementById("logoutButton").onclick = function(){

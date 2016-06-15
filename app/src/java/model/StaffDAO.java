@@ -27,7 +27,7 @@ public class StaffDAO {
     private ArrayList<Staff> readDatabase(){
         ArrayList<Staff> staff = new ArrayList<Staff>();
         try(Connection conn = ConnectionManager.getConnection();){
-            PreparedStatement stmt = conn.prepareStatement("SELECT Nric,Salutation,Name,Classes FROM staff");
+            PreparedStatement stmt = conn.prepareStatement("SELECT Nric,Salutation,Name,Classes FROM STAFF");
             ResultSet rs = stmt.executeQuery();
             while(rs.next()){
                 int counter = 0;
@@ -80,7 +80,7 @@ public class StaffDAO {
     public boolean login(String staffId, String candidate){
         try{
             Connection conn = ConnectionManager.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("SELECT PasswordHash FROM staff WHERE Nric LIKE ?");
+            PreparedStatement stmt = conn.prepareStatement("SELECT PasswordHash FROM STAFF WHERE Nric LIKE ?");
             stmt.setString(1, staffId); 
             ResultSet rs = stmt.executeQuery();
             if(rs.next()){
@@ -127,13 +127,13 @@ public class StaffDAO {
     }
     
     private PreparedStatement createLoginPreparedStatement(Connection conn, String staffId) throws SQLException{
-        PreparedStatement stmt = conn.prepareStatement("SELECT PasswordHash FROM staff WHERE Nric LIKE ?");
+        PreparedStatement stmt = conn.prepareStatement("SELECT PasswordHash FROM STAFF WHERE Nric LIKE ?");
         stmt.setString(1, staffId);
         return stmt;
     }
 
     private PreparedStatement createChangePasswordPreparedStatement(Connection conn, String staffId, String candidate) throws SQLException{
-        PreparedStatement stmt = conn.prepareStatement("UPDATE staff SET PasswordHash = ? WHERE Nric LIKE ?");
+        PreparedStatement stmt = conn.prepareStatement("UPDATE STAFF SET PasswordHash = ? WHERE Nric LIKE ?");
         stmt.setString(1, candidate);
         stmt.setString(2, staffId);
         return stmt;
@@ -142,7 +142,7 @@ public class StaffDAO {
     public boolean addStaff(String staffUserName, String staffSalutation, String staffName, String newCandidate) {
         int updatedRows = -1;
         try(Connection conn = ConnectionManager.getConnection();){
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO staff (Nric, Salutation, Name, PasswordHash, Last_Updated) VALUES (?,?,?,?,?)");
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO STAFF (Nric, Salutation, Name, PasswordHash, Last_Updated) VALUES (?,?,?,?,?)");
             stmt.setString(1, staffUserName);
             stmt.setString(2, staffSalutation);
             stmt.setString(3, staffName);

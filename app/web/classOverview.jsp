@@ -26,18 +26,24 @@
             for(User u: users){
         %>
                 <p>
-                    <%= u.getName()%>
-                    <%= "\nCurrent Points: " + transactionDAO.getTotalPoints(u.getNric()) %>
+                    <%= u.getName() %>
+                    <%= "<br>Current Points: " + transactionDAO.getTotalPoints(u.getNric()) %>
                     <form action="newTransaction" method="post">
                         <input type="hidden" name="staffID" value=<%= "\"" + staff.getNric() + "\"" %>>
                         <input type="hidden" name="userID" value=<%= "\"" + u.getNric() + "\"" %>>
                         <input type="hidden" name="delta" value="5">
                         <input type="hidden" name="reason" value="Correct answer in class">
+                        <input type="hidden" name="selectedClass" value=<%=selectedClass%>>
                         <button type="submit">Correct Answer</button>
                     </form>
                 </p>
         <%
             }
         %>
+        <div>
+            <form action="dashboard.jsp" method="post">
+                <button type="submit">Back to dashboard</button>
+            </form>
+        </div>
     </body>
 </html>

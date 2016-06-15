@@ -38,15 +38,14 @@ public class addStudentServlet extends HttpServlet {
             String studentName = (String) request.getParameter("studentName"); //name must be declared in JSP!
             String studentClass = (String) request.getParameter("studentClass"); //name must be declared in JSP!
             UserDAO userDAO = (UserDAO) session.getAttribute("userDAO");
-            //TODO automatically update date using Jodatime?
             if(!userDAO.addNewUser(studentUserName, studentName, studentClass)){
-                session.setAttribute("displayMessage", "Could not add staff! Please contact an adminstrator!");
+                session.setAttribute("displayMessage", "Could not add student! Please contact an adminstrator!");
             }
             else{
                 session.setAttribute("displayMessage", "Added " + studentUserName + " successfully!");
                 session.setAttribute("userDAO", new UserDAO());
             }
-            response.sendRedirect("dashboard.jsp");
+            response.sendRedirect("addStudent.jsp");
             return;
         }
         catch(Exception e){

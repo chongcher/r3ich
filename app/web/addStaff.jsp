@@ -24,13 +24,18 @@
         <form id="addStaffForm" action="addStaffServlet" method="post">
             <table>
                 <tr>
-                    <td>Staff username:</td>
+                    <td>Staff Username:</td>
                     <td><input type="text" id="staffUserName" name="staffUserName"></td>
                 </tr>
                 <tr>
                     <td>Salutation:</td>
-                    <!--TODO change to dropdown list -->
-                    <td><input type="text" id="staffSalutation" name="staffSalutation"></td>
+                    <td>
+                        <select id="staffSalutation" name="staffSalutation">
+                            <option value="Mdm">Mdm</option>
+                            <option value="Mr">Mr</option>
+                            <option value="Mrs">Mrs</option>
+                        </select>
+                    </td>
                 </tr>
                 <tr>
                     <td>Staff Name:</td>

@@ -26,7 +26,7 @@ public class TransactionDAO {
     private ArrayList<Transaction> readDatabase(){
         ArrayList<Transaction> allTransactions = new ArrayList<Transaction>();
         try(Connection conn = ConnectionManager.getConnection();){
-            PreparedStatement stmt = conn.prepareStatement("Select * from transactions");
+            PreparedStatement stmt = conn.prepareStatement("Select * from TRANSACTIONS");
             ResultSet rs = stmt.executeQuery();
             int counter = 0;
             while(rs.next()){
@@ -48,7 +48,7 @@ public class TransactionDAO {
             String requestDelta,String requestReason,DateTime requestTimestamp) throws SQLException{
         boolean success = false;
         try(Connection conn = ConnectionManager.getConnection();){
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO transaction_details (`Staff`, `User`, `Delta`, `Reason`, `Transaction_DateTime`) VALUES (?, ?, ?, ?, ?);");
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO TRANSACTION_DETAILS (`Staff`, `User`, `Delta`, `Reason`, `Transaction_DateTime`) VALUES (?, ?, ?, ?, ?);");
             stmt.setString(1, requestStaffID);
             stmt.setString(2, requestUserID);
             stmt.setInt(3, Integer.parseInt(requestDelta));
@@ -66,7 +66,7 @@ public class TransactionDAO {
     public int getTotalPoints(String userID){
         int totalPoints = 0;
         try(Connection conn = ConnectionManager.getConnection();){
-            PreparedStatement stmt = conn.prepareStatement("SELECT SUM(Delta) FROM (SELECT * FROM transaction_details WHERE `User` = ?) as temp");
+            PreparedStatement stmt = conn.prepareStatement("SELECT SUM(Delta) FROM (SELECT * FROM TRANSACTION_DETAILS WHERE `User` = ?) as temp");
             stmt.setString(1, userID);
             ResultSet rs = stmt.executeQuery();
             if(rs.next()){
