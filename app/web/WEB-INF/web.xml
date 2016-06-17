@@ -24,6 +24,10 @@
         <servlet-name>addStudentServlet</servlet-name>
         <servlet-class>controller.addStudentServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>createNewGroup</servlet-name>
+        <servlet-class>controller.createNewGroup</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>newTransactionServlet</servlet-name>
         <url-pattern>/newTransaction</url-pattern>
@@ -47,6 +51,10 @@
     <servlet-mapping>
         <servlet-name>addStudentServlet</servlet-name>
         <url-pattern>/addStudentServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>createNewGroup</servlet-name>
+        <url-pattern>/createNewGroup</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

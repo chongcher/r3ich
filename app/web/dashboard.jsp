@@ -4,6 +4,8 @@
     Author     : ccchia.2014
 --%>
 
+<%@page import="java.util.ArrayList"%>
+<%@page import="model.UserDAO"%>
 <%@page import="model.Staff"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@include file="security.jsp" %>
@@ -22,11 +24,28 @@
             }
         %>
         <div>
-            <form action="classOverview.jsp" method="get">
-                Select a class 
+            <form action="groupOverview.jsp" method="get">
+                Select a group 
+                <select name="selectedClassAndGroup">
+                    <%
+                        UserDAO userDAO = (UserDAO) session.getAttribute("userDAO");
+                        for(String s: staff.getClasses()){
+                            ArrayList<String> classGroups = userDAO.getGroupsByClass(s);
+                            for(String classGroup: classGroups){
+                                out.println("<option value='" + s + " " + classGroup + "'>" + s + " " + classGroup + "</option>");
+                            }
+                        }
+                    %>
+                </select>
+                <button type="submit">View Selected Group</button>
+            </form>
+        </div>
+        <div>
+            <form action="assignGroup.jsp" method="get">
+                Select a class
                 <select name="selectedClass">
                     <%
-                        for(String s: staff.getClasses()){
+                        for(String s: UserDAO.getAllClasses()){
                             out.println("<option value='" + s + "'>" + s + "</option>");
                         }
                     %>

@@ -7,20 +7,17 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import model.*;
-import org.joda.time.DateTime;
 
 /**
  *
  * @author ccchia.2014
  */
-public class newTransactionServlet extends HttpServlet {
+public class createNewGroup extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,22 +32,12 @@ public class newTransactionServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            HttpSession session = request.getSession();
-            TransactionDAO transactionDAO = (TransactionDAO) session.getAttribute("transactionDAO");
-            String requestStaffID = (String) request.getParameter("staffID");
-            String requestUserID = request.getParameter("userID");
-            String requestDelta = request.getParameter("delta");
-            String requestReason = request.getParameter("reason");
-            DateTime requestTimestamp = DateTime.now();            
-            if(!transactionDAO.newTransaction(requestStaffID,requestUserID,requestDelta,requestReason,requestTimestamp)){
-                session.setAttribute("displayMessage", "Could not create a new transaction! Please try again later!");
+            String subject = (String) request.getParameter("subject"); //name must be declared in JSP!
+            String groupName = (String) request.getParameter("groupName"); //name must be declared in JSP!
+            String[] members = request.getParameterValues("members[]");
+            for(String s: members){
+                out.println(s);
             }
-            String selectedClassAndGroup = request.getParameter("selectedClassAndGroup");
-            response.sendRedirect("groupOverview.jsp?selectedClassAndGroup=" + selectedClassAndGroup);
-            return;
-        }
-        catch(SQLException e){
-            e.printStackTrace();
         }
     }
 

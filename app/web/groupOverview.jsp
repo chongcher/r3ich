@@ -15,19 +15,21 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Class Overview</title>
+        <title>Group Overview</title>
     </head>
     <body>
         <%
-            String selectedClass = (String) request.getParameter("selectedClass");
-            if(null == selectedClass || selectedClass == ""){
-                session.setAttribute("displayMessage", "Please select a class!");
+            String selectedClassAndGroup = (String) request.getParameter("selectedClassAndGroup");
+            if(null == selectedClassAndGroup || selectedClassAndGroup == ""){
+                session.setAttribute("displayMessage", "Please select a group!");
                 response.sendRedirect("dashboard.jsp");
                 return;
             }
+            String selectedClass = selectedClassAndGroup.substring(0, selectedClassAndGroup.indexOf(" "));
+            String selectedGroup = selectedClassAndGroup.substring(selectedClassAndGroup.indexOf(" ")+1);
             UserDAO userDAO = (UserDAO) session.getAttribute("userDAO");
             TransactionDAO transactionDAO = (TransactionDAO) session.getAttribute("transactionDAO");
-            ArrayList<User> users = userDAO.getUsersByClass(selectedClass);
+            ArrayList<User> users = userDAO.getUsersByClassAndGroup(selectedClass, selectedGroup);
             for(User u: users){
         %>
                 <p>
@@ -38,7 +40,7 @@
                         <input type="hidden" name="userID" value=<%= "\"" + u.getNric() + "\"" %>>
                         <input type="hidden" name="delta" value="5">
                         <input type="hidden" name="reason" value="Correct answer in class">
-                        <input type="hidden" name="selectedClass" value=<%=selectedClass%>>
+                        <input type="hidden" name="selectedClassAndGroup" value=<%="\"" + selectedClassAndGroup.replaceAll(" ", "+") + "\""%>>
                         <button type="submit">Correct Answer</button>
                     </form>
                 </p>

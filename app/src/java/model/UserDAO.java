@@ -79,11 +79,42 @@ public class UserDAO {
     public ArrayList<User> getUsersByClass(String userClass){
         ArrayList<User> sortedUserList = new ArrayList<>();
         for(User u : userList){
-            if(userClass.equals(u.getUserClass())){
+            if(u.getUserClass().equals(userClass)){
                 sortedUserList.add(u);
             }
         }
         return sortedUserList;
+    }
+    
+    public ArrayList<User> getUsersByClassAndGroup(String userClass, String userGroup){
+        ArrayList<User> sortedUserList = new ArrayList<>();
+        for(User u : userList){
+            if(u.getUserClass().equals(userClass) && u.getGroupList().contains(userGroup)){
+                sortedUserList.add(u);
+            }
+        }
+        return sortedUserList;
+    }
+    
+    public ArrayList<String> getGroupsByClass(String userClass){
+        ArrayList<String> groupList = new ArrayList<String>();
+        try(Connection conn = ConnectionManager.getConnection();){
+            PreparedStatement stmt = conn.prepareStatement("SELECT DISTINCT `Group` FROM USERS WHERE Class LIKE ?");
+            stmt.setString(1, userClass);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                String[] result = rs.getString(1).split(",");
+                for(String s: result){
+                    if(!groupList.contains(s.trim())){
+                        groupList.add(s.trim());
+                    }
+                }
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return groupList;
     }
     
     public String getName(String userId){
@@ -107,5 +138,20 @@ public class UserDAO {
             }
         }
         return false;
+    }
+    
+    public static ArrayList<String> getAllClasses(){
+        ArrayList<String> result = new ArrayList<String>();
+        try(Connection conn = ConnectionManager.getConnection();){
+            String query = "SELECT DISTINCT Class FROM USERS";
+            ResultSet rs = conn.createStatement().executeQuery(query);
+            while(rs.next()){
+                result.add(rs.getString(1));
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return result;
     }
 }
