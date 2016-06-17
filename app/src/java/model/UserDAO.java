@@ -191,4 +191,84 @@ public class UserDAO {
         }
         return querySuccessful;
     }
+    
+    public boolean updateGroup(String selectedClass, String selectedGroup, ArrayList<String> addToGroup, ArrayList<String> removeFromGroup){
+        boolean querySuccessful = false;
+        querySuccessful = addToGroup(selectedClass, selectedGroup, addToGroup) && removeFromGroup(selectedClass, selectedGroup, removeFromGroup);
+        return querySuccessful;
+    }
+    
+    private boolean addToGroup(String selectedClass, String selectedGroup, ArrayList<String> addToGroup){
+        boolean querySuccessful = false;
+        if(null == selectedClass || null == selectedGroup || "".equals(selectedClass) || "".equals(selectedGroup) || addToGroup.size() == 0){
+            return true;
+        }
+        String group = "," + selectedGroup;
+        String sql = "UPDATE USERS SET `Group` = CONCAT(`Group`, ?) WHERE NRIC LIKE ?";
+        int counter = 1;
+        while(counter < addToGroup.size()){
+            sql = sql + " OR NRIC LIKE ?";
+            counter++;
+        }
+        counter = 0;
+        try(Connection conn = ConnectionManager.getConnection();){
+            conn.setAutoCommit(false);
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(++counter, group);
+            while(counter <= addToGroup.size()){
+                stmt.setString(++counter, addToGroup.get(counter-2));
+            }
+            int updatedRows = stmt.executeUpdate();
+            querySuccessful = (addToGroup.size() == updatedRows);
+            if(!querySuccessful){
+                conn.rollback();
+                conn.setAutoCommit(true);
+            }
+            else{
+                conn.commit();
+                conn.setAutoCommit(true);
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return querySuccessful;
+    }
+    
+    private boolean removeFromGroup(String selectedClass, String selectedGroup, ArrayList<String> removeFromGroup){
+        boolean querySuccessful = false;
+        if(null == selectedClass || null == selectedGroup || "".equals(selectedClass) || "".equals(selectedGroup) || removeFromGroup.size() == 0){
+            return true;
+        }
+        String group = "," + selectedGroup;
+        String sql = "UPDATE USERS SET `Group` = REPLACE(`Group`, ?, \"\") WHERE NRIC LIKE ?";
+        int counter = 1;
+        while(counter < removeFromGroup.size()){
+            sql = sql + " OR NRIC LIKE ?";
+            counter++;
+        }
+        counter = 0;
+        try(Connection conn = ConnectionManager.getConnection();){
+            conn.setAutoCommit(false);
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(++counter, group);
+            while(counter <= removeFromGroup.size()){
+                stmt.setString(++counter, removeFromGroup.get(counter-2));
+            }
+            int updatedRows = stmt.executeUpdate();
+            querySuccessful = (removeFromGroup.size() == updatedRows);
+            if(!querySuccessful){
+                conn.rollback();
+                conn.setAutoCommit(true);
+            }
+            else{
+                conn.commit();
+                conn.setAutoCommit(true);
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return querySuccessful;
+    }
 }

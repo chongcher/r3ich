@@ -7,18 +7,21 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import model.User;
 import model.UserDAO;
 
 /**
  *
  * @author ccchia.2014
  */
-public class createNewGroup extends HttpServlet {
+public class editGroupMembersServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,17 +37,37 @@ public class createNewGroup extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
         try (PrintWriter out = response.getWriter()) {
-            String subject = (String) request.getParameter("subject"); //name must be declared in JSP!
-            String groupName = (String) request.getParameter("groupName"); //name must be declared in JSP!
-            String[] members = request.getParameterValues("members[]");
+            String selectedClass = (String) request.getParameter("selectedClass"); //name must be declared in JSP!
+            String selectedGroup = (String) request.getParameter("selectedGroup"); //name must be declared in JSP!
             UserDAO userDAO = (UserDAO) session.getAttribute("userDAO");
-            boolean success = userDAO.createNewGroup(subject, groupName, members);
-            if(!success){
-                session.setAttribute("displayMessage", "Could not add a new group! Please contact an admininstrator!");
+            ArrayList<User> allClassUsers = userDAO.getUsersByClass(selectedClass);
+            ArrayList<User> currentGroupMembers = userDAO.getUsersByClassAndGroup(selectedClass, selectedGroup);
+            ArrayList<String> updatedMembers;
+            String[] membersArray = (String[]) request.getParameterValues("updatedMembers[]");
+            if(membersArray == null || membersArray.length == 0){
+                updatedMembers = new ArrayList<String>();
             }
             else{
-                session.setAttribute("displayMessage", "Added " + groupName + " successfully!");
+                updatedMembers = new ArrayList<String>(Arrays.asList(membersArray));
             }
+            System.out.println("Check2");
+            ArrayList<String> addedToGroup = new ArrayList<String>();
+            ArrayList<String> removedFromGroup = new ArrayList<String>();
+            for(User u: allClassUsers){
+                if(currentGroupMembers.contains(u) && !updatedMembers.contains(u.getNric())){
+                    removedFromGroup.add(u.getNric());
+                }
+                else if(!currentGroupMembers.contains(u) && updatedMembers.contains(u.getNric())){
+                    addedToGroup.add(u.getNric());
+                }
+            }
+            if(!userDAO.updateGroup(selectedClass, selectedGroup, addedToGroup, removedFromGroup)){
+                session.setAttribute("displayMessage", "Could not update group! Please contact an administrator");
+            }
+            else{
+                session.setAttribute("displayMessage", "Updated group successfully");
+            }
+            session.setAttribute("userDAO", new UserDAO());
             response.sendRedirect("groupUtilities.jsp?selectedClass=" + request.getParameter("selectedClass"));
         }
     }

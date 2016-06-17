@@ -26,7 +26,11 @@
     </servlet>
     <servlet>
         <servlet-name>createNewGroup</servlet-name>
-        <servlet-class>controller.createNewGroup</servlet-class>
+        <servlet-class>controller.createNewGroupServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>editGroupMembersServlet</servlet-name>
+        <servlet-class>controller.editGroupMembersServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>newTransactionServlet</servlet-name>
@@ -55,6 +59,10 @@
     <servlet-mapping>
         <servlet-name>createNewGroup</servlet-name>
         <url-pattern>/createNewGroup</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>editGroupMembersServlet</servlet-name>
+        <url-pattern>/editGroupMembersServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

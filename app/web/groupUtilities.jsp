@@ -35,16 +35,16 @@
         </div>
         <div>
             <form action="editGroupMembers.jsp" method="get">
+                <input type="hidden" name="selectedClass" value=<%=selectedClass%>>
                 <select name="selectedGroup">
                     <%
                         for(String s: allGroups){                            
                     %> 
-                            <option value=<%=s%>><%=s%></option>
+                            <option value=<%= "\"" + s + "\""%>><%=s%></option>
                     <%
                         }
                     %>
                 </select>
-                <input type="hidden" name="selectedClass" value=<%=selectedClass%>>
                 <button type="submit">Edit Group Members</button>
             </form>
         </div>
