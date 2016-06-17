@@ -41,7 +41,7 @@
             </form>
         </div>
         <div>
-            <form action="assignGroup.jsp" method="get">
+            <form action="groupUtilities.jsp" method="get">
                 Select a class
                 <select name="selectedClass">
                     <%
@@ -50,7 +50,7 @@
                         }
                     %>
                 </select>
-                <button type="submit">View Selected Class</button>
+                <button type="submit">View Group Utilities</button>
             </form>
         </div>
         <div>

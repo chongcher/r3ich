@@ -7,11 +7,12 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import model.UserDAO;
 
 /**
  *
@@ -31,13 +32,20 @@ public class createNewGroup extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        HttpSession session = request.getSession();
         try (PrintWriter out = response.getWriter()) {
             String subject = (String) request.getParameter("subject"); //name must be declared in JSP!
             String groupName = (String) request.getParameter("groupName"); //name must be declared in JSP!
             String[] members = request.getParameterValues("members[]");
-            for(String s: members){
-                out.println(s);
+            UserDAO userDAO = (UserDAO) session.getAttribute("userDAO");
+            boolean success = userDAO.createNewGroup(subject, groupName, members);
+            if(!success){
+                session.setAttribute("displayMessage", "Could not add a new group! Please contact an admininstrator!");
             }
+            else{
+                session.setAttribute("displayMessage", "Added " + groupName + " successfully!");
+            }
+            response.sendRedirect("groupUtilities.jsp?selectedClass=" + request.getParameter("selectedClass"));
         }
     }
 

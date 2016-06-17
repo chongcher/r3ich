@@ -154,4 +154,41 @@ public class UserDAO {
         }
         return result;
     }
+    
+    public boolean createNewGroup(String subject, String groupName, String[] members){
+        boolean querySuccessful = false;
+        if(null == subject || null == groupName || "".equals(subject) || "".equals(groupName) || members.length == 0){
+            return false;
+        }
+        String group = "," + subject + " " + groupName;
+        String sql = "UPDATE USERS SET `Group` = CONCAT(`Group`, ?) WHERE NRIC LIKE ?";
+        int counter = 1;
+        while(counter < members.length){
+            sql = sql + " OR NRIC LIKE ?";
+            counter++;
+        }
+        counter = 0;
+        try(Connection conn = ConnectionManager.getConnection();){
+            conn.setAutoCommit(false);
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(++counter, group);
+            while(counter <= members.length){
+                stmt.setString(++counter, members[counter-2]);
+            }
+            int updatedRows = stmt.executeUpdate();
+            querySuccessful = (members.length == updatedRows);
+            if(!querySuccessful){
+                conn.rollback();
+                conn.setAutoCommit(true);
+            }
+            else{
+                conn.commit();
+                conn.setAutoCommit(true);
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return querySuccessful;
+    }
 }

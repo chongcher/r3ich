@@ -26,7 +26,7 @@
             ArrayList<User> users = userDAO.getUsersByClass(selectedClass);
         %>
         <form action="createNewGroup" method="post">
-            <input type="hidden" value=selectedClass name="selectedClass">
+            <input type="hidden" value=<%=selectedClass%> name="selectedClass">
             <table>
                 <tr>
                     <td>Subject</td>
