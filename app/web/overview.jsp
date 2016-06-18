@@ -21,7 +21,7 @@
                 out.println("<p>" + session.getAttribute("displayMessage") + "</p>");
                 session.setAttribute("displayMessage", null);
             }
-            if(null == session.getAttribute("userId") && null == request.getAttribute("userId")){
+            if(null == session.getAttribute("userId") && null == request.getParameter("userId")){
         %>
         <div>
             <p>
@@ -32,12 +32,9 @@
             </p>
         </div>
         <div>
-            <button id="staffLoginButton">Staff Login</button>
-            <script type="text/javascript">
-                document.getElementById("staffLoginButton").onclick = function(){
-                    location.href = "login.jsp";
-                }
-            </script>
+            <form action="login.jsp" method="post">
+                <button type="submit">Staff Login</button>
+            </form>
         </div>
         <%
                 return;
@@ -48,43 +45,54 @@
                     userId = (String) request.getParameter("userId");
                     session.setAttribute("userId", userId);
                 }
-                session.setAttribute("transactionDAO", new TransactionDAO());
-                session.setAttribute("userDAO", new UserDAO());
-            }
-            TransactionDAO transactionDAO = (TransactionDAO) session.getAttribute("transactionDAO");
-            UserDAO userDAO = (UserDAO) session.getAttribute("userDAO");
-            String userId = (String) session.getAttribute("userId");
-            if(!userDAO.exists("userId")){
-                session.setAttribute("displayMessage","Unknown ID! Please try again!");
-                session.setAttribute("userId", null);
-                response.sendRedirect("overview.jsp");
-                return;
-            }
+                TransactionDAO transactionDAO = new TransactionDAO();
+                UserDAO userDAO = new UserDAO();
+                if(!userDAO.exists(userId)){
+                    session.setAttribute("displayMessage","Unknown ID! Please try again!");
+                    session.setAttribute("userId", null);
+                    response.sendRedirect("overview.jsp");
+                    return;
+                }
+                session.setAttribute("transactionDAO", transactionDAO);
+                session.setAttribute("userDAO", userDAO);
         %>
         <div>
             <p>
                 Hi <%= userDAO.getName(userId) %> !
                 </br>Current points: <%= transactionDAO.getTotalPoints(userId) %>
-                <!--TODO show classmates' scores
-                //TODO show skills-->
             </p>
             <p>
                 <u>Top of the class</u>
-            </p>
+                <table>
+                    <tr>
+                        <td>Name</td>
+                        <td>Points</td>
+                    </tr>
         <%
-            String userClass = userDAO.getClass(userId);
-            ArrayList<User> classlist = userDAO.getUsersByClass(userClass);
-            final int usersToDisplay = 5;
-            int currentlyDisplayed = 0;
-            while(currentlyDisplayed < usersToDisplay){
-                int tmpTopScore = 0;
-                ArrayList<User> usersWithTopScore = new ArrayList<User>();
-                for(User u: classlist){
-                    //if(transactionDAO.getTotalPoints(userID))
-                    //TODO too expensive! Use SQL to do this instead!
+                String userClass = userDAO.getClass(userId);
+                ArrayList<User> classlist = userDAO.getUsersByClass(userClass);
+                final int usersToDisplay = 5;
+                ArrayList<String> rankedClassList = userDAO.getRankedClassList(userClass, usersToDisplay);
+                for(String u: rankedClassList){
+        %>
+                <tr>
+                    <td><%=u%></td>
+                    <td><%=transactionDAO.getTotalPoints(u)%></td>
+                </tr>
+        <%
                 }
+        %>
+                </table>
+            </p>
+        </div>
+        <div>
+            <form action="showSkills.jsp" method="get">
+                <input type="hidden" name="userId" value=<%= "\"" + userId + "\""%>>
+                <button type="submit">Show my skills!</button>
+            </form>
+        </div>
+        <%
             }
         %>
-        </div>
     </body>
 </html>

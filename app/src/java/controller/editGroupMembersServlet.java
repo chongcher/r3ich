@@ -50,7 +50,6 @@ public class editGroupMembersServlet extends HttpServlet {
             else{
                 updatedMembers = new ArrayList<String>(Arrays.asList(membersArray));
             }
-            System.out.println("Check2");
             ArrayList<String> addedToGroup = new ArrayList<String>();
             ArrayList<String> removedFromGroup = new ArrayList<String>();
             for(User u: allClassUsers){

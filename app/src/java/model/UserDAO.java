@@ -76,6 +76,13 @@ public class UserDAO {
         return (1 == updatedRows);
     }
     
+    public User getUserByNric(String nric){
+        for(User u: userList){
+            if(nric == u.getNric()) return u;
+        }
+        return null;
+    }
+    
     public ArrayList<User> getUsersByClass(String userClass){
         ArrayList<User> sortedUserList = new ArrayList<>();
         for(User u : userList){
@@ -270,5 +277,24 @@ public class UserDAO {
             e.printStackTrace();
         }
         return querySuccessful;
+    }
+    
+    public ArrayList<String> getRankedClassList(String userClass, int usersToReturn){
+        ArrayList<String> rankedClassList = new ArrayList<String>();
+        try(Connection conn = ConnectionManager.getConnection();){
+            String sql = "SELECT t.User, SUM(t.Delta), u.`Class` FROM TRANSACTION_DETAILS as t, USERS as u WHERE t.User = u.Nric AND u.`Class` = ? GROUP BY User ORDER BY SUM(Delta) DESC LIMIT ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, userClass);
+            stmt.setInt(2, usersToReturn);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                String userId = rs.getString(1);
+                rankedClassList.add(userId);
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return rankedClassList;
     }
 }
