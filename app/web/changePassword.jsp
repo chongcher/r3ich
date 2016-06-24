@@ -10,36 +10,48 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="style.css" type="text/css">
         <title>Change Password</title>
     </head>
     <body>
         <script src="hashes.js"></script><!-- taken from http://cdn.rawgit.com/h2non/jsHashes/master/hashes.js on 23/05/2016-->
-        <%
-            String errorMsg = (String) session.getAttribute("displayMessage");
-            if(errorMsg != null){
-                out.println("<p><h2>" + errorMsg + "</h2></p>");
-                session.setAttribute("displayMessage",null);
-            }
-        %>
-        <form id="changePasswordForm" action="changePasswordServlet" method="post">
-            <table>
-                <tr>
-                    <td>Current Password:</td>
-                    <td><input type="password" id="unhashedCurrentPassword"></td>
-                </tr>
-                <tr>
-                    <td>New Password:</td>
-                    <td><input type="password" id="unhashedNewCandidate"></td>
-                </tr>
-                <tr>
-                    <td>Confirm New Password:</td>
-                    <td><input type="password" id="unhashedNewCandidateConfirmation"></td>
-                </tr>
-            </table>
-            <input type="hidden" id="currentPassword" name="currentPassword">
-            <input type="hidden" id="newCandidate" name="newCandidate">
-            <input type="button" onclick="hashFormFields()" value="Change password">
-        </form>
+        <div class="header">
+            <%
+                String errorMsg = (String) session.getAttribute("displayMessage");
+                if(errorMsg != null){
+                    out.println("<p><h2 style=\"color:red;text-align:center;\">" + errorMsg + "</h2></p>");
+                    session.setAttribute("displayMessage" , null);
+                }
+            %>
+        </div>
+        <div class="main">
+            <form id="changePasswordForm" action="changePasswordServlet" method="post">
+                <table>
+                    <tr>
+                        <td class="alignRight">Current Password:</td>
+                        <td class="alignLeft"><input type="password" id="unhashedCurrentPassword"></td>
+                    </tr>
+                    <tr>
+                        <td class="alignRight">New Password:</td>
+                        <td class="alignLeft"><input type="password" id="unhashedNewCandidate"></td>
+                    </tr>
+                    <tr>
+                        <td class="alignRight">Confirm New Password:</td>
+                        <td class="alignLeft"><input type="password" id="unhashedNewCandidateConfirmation"></td>
+                    </tr>
+                    <tr>
+                        <td class="centered" colspan="2"><input type="button" onclick="hashFormFields()" value="Change password"></td>
+                    </tr>
+                </table>
+                <input type="hidden" id="currentPassword" name="currentPassword">
+                <input type="hidden" id="newCandidate" name="newCandidate">
+            </form>
+        </div>
+        <div class="footer">
+            <form action="dashboard.jsp" method="post">
+                <button type="submit">Back to dashboard</button>
+            </form>
+        </div>
         <script>
             function hashFormFields(){
                 //TODO catch form fields empty!

@@ -13,39 +13,53 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Group Utilities</title>
+        <link rel="stylesheet" href="style.css" type="text/css">
     </head>
     <body>
-        <%
-            String errorMsg = (String) session.getAttribute("displayMessage");
-            if(errorMsg != null){
-                out.println("<p><h2>" + errorMsg + "</h2></p>");
-                session.setAttribute("displayMessage" , null);
-            }
-        %>
-        <%
-            String selectedClass = (String) request.getParameter("selectedClass");
-            UserDAO userDAO = (UserDAO) session.getAttribute("userDAO");
-            ArrayList<String> allGroups = userDAO.getGroupsByClass(selectedClass);
-        %>
-        <div>
-            <form action="createNewGroup.jsp" method="get">
-                <input type="hidden" name="selectedClass" value=<%=selectedClass%>>
-                <button type="submit">Create New Group</button>
-            </form>
+        <div class="header">
+            <%
+                String errorMsg = (String) session.getAttribute("displayMessage");
+                if(errorMsg != null){
+                    out.println("<p><h2 style=\"color:red;text-align:center;\">" + errorMsg + "</h2></p>");
+                    session.setAttribute("displayMessage" , null);
+                }
+            %>
         </div>
-        <div>
-            <form action="editGroupMembers.jsp" method="get">
-                <input type="hidden" name="selectedClass" value=<%=selectedClass%>>
-                <select name="selectedGroup">
-                    <%
-                        for(String s: allGroups){                            
-                    %> 
-                            <option value=<%= "\"" + s + "\""%>><%=s%></option>
-                    <%
-                        }
-                    %>
-                </select>
-                <button type="submit">Edit Group Members</button>
+        <div class="main">
+            <%
+                String selectedClass = (String) request.getParameter("selectedClass");
+                UserDAO userDAO = (UserDAO) session.getAttribute("userDAO");
+                ArrayList<String> allGroups = userDAO.getGroupsByClass(selectedClass);
+            %>
+            <table>
+                <form action="createNewGroup.jsp" method="get">
+                    <input type="hidden" name="selectedClass" value=<%=selectedClass%>>
+                    <tr>
+                        <td class="centered" colspan="2"><button type="submit">Create New Group</button></td>
+                    </tr>
+                </form>
+                <form action="editGroupMembers.jsp" method="get">
+                    <input type="hidden" name="selectedClass" value=<%=selectedClass%>>
+                    <tr>
+                        <td class="alignRight">
+                            <select name="selectedGroup">
+                                <%
+                                    for(String s: allGroups){                            
+                                %> 
+                                        <option value=<%= "\"" + s + "\""%>><%=s%></option>
+                                <%
+                                    }
+                                %>
+                            </select>
+                        </td>
+                        <td class="alignLeft"><button type="submit">Edit Group Members</button></td>
+                    </tr>
+                </form>
+            </table>
+        </div>
+        <div class="footer">
+            <form action="dashboard.jsp" method="post">
+                <button type="submit">Back to dashboard</button>
             </form>
         </div>
     </body>

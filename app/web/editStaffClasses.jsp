@@ -13,38 +13,56 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="style.css" type="text/css">
         <title>Edit Staff Classes</title>
     </head>
     <body>
-        <%
-            String selectedStaff = (String) request.getParameter("selectedStaff");
-            if(null == selectedStaff || selectedStaff.equals("")){
-                session.setAttribute("displayMessage", "Please select a staff member!");
-                response.sendRedirect("dashboard.jsp");
-                return;
-            }
-            UserDAO userDAO = (UserDAO) session.getAttribute("userDAO");
-            StaffDAO staffDAO = (StaffDAO) session.getAttribute("staffDAO");
-            ArrayList<String> allClasses = userDAO.getAllClasses();
-            ArrayList<String> assignedClasses = staffDAO.getAssignedClasses(selectedStaff);
-        %>
-        <form action="editStaffClassesServlet" method="post">
-            <input type="hidden" name="staffId" value=<%= selectedStaff %>>
+        <div class="main">
             <%
-                for(String className: allClasses){
-                    if(!assignedClasses.contains(className)){
-            %>
-            <input type="checkbox" name="assignedClasses[]" value=<%= "\"" + className + "\"" %>><%= className %></br>
-            <%         
-                    }
-                    else{
-            %>
-            <input type="checkbox" name="assignedClasses[]" value=<%= "\"" + className + "\"" %> checked><%= className %></br>
-            <%
-                    }
+                String selectedStaff = (String) request.getParameter("selectedStaff");
+                if(null == selectedStaff || selectedStaff.equals("")){
+                    session.setAttribute("displayMessage", "Please select a staff member!");
+                    response.sendRedirect("dashboard.jsp");
+                    return;
                 }
+                UserDAO userDAO = (UserDAO) session.getAttribute("userDAO");
+                StaffDAO staffDAO = (StaffDAO) session.getAttribute("staffDAO");
+                ArrayList<String> allClasses = userDAO.getAllClasses();
+                ArrayList<String> assignedClasses = staffDAO.getAssignedClasses(selectedStaff);
             %>
-            <button type="submit">Assign classes</button>
-        </form>
+            <form action="editStaffClassesServlet" method="post">
+                <input type="hidden" name="staffId" value=<%= selectedStaff %>>
+                <table>
+                <%
+                    for(String className: allClasses){
+                        if(!assignedClasses.contains(className)){
+                %>
+                    <tr>
+                        <td class="alignRight"><input type="checkbox" name="assignedClasses[]" value=<%= "\"" + className + "\"" %>></td>
+                        <td class="alignLeft"><%= className %></td>
+                    </tr>
+                <%         
+                        }
+                        else{
+                %>
+                    <tr>
+                        <td class="alignRight"><input type="checkbox" name="assignedClasses[]" value=<%= "\"" + className + "\"" %> checked></td>
+                        <td class="alignLeft"><%= className %></td>
+                    </tr>
+                <%
+                        }
+                    }
+                %>
+                    <tr>
+                        <td class="centered" colspan="2"><button type="submit">Assign classes</button></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <div class="footer">
+            <form action="dashboard.jsp" method="post">
+                <button type="submit">Back to dashboard</button>
+            </form>
+        </div>
     </body>
 </html>

@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import model.User;
 import java.util.ArrayList;
+import java.util.HashMap;
 import utility.ConnectionManager;
 
 /*
@@ -308,5 +309,78 @@ public class UserDAO {
             }
         }
         return allGroups;
+    }
+    
+    public HashMap<String,Integer> getSkillLevels(String userId){
+        if(!this.exists(userId)) return null;
+        HashMap skillLevels = new HashMap<String,Integer>();
+        try(Connection conn = ConnectionManager.getConnection();){
+            PreparedStatement stmt = conn.prepareStatement("SELECT Respect_Level, Resilience_Level, Responsibility_Level, Integrity_Level, Care_Level, Harmony_Level FROM USERS WHERE Nric LIKE ?");
+            stmt.setString(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+            skillLevels.put("Respect", rs.getInt(1));
+            skillLevels.put("Resilience", rs.getInt(2));
+            skillLevels.put("Responsibility", rs.getInt(3));
+            skillLevels.put("Integrity", rs.getInt(4));
+            skillLevels.put("Care", rs.getInt(5));
+            skillLevels.put("Harmony", rs.getInt(6));
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return skillLevels;
+    }
+    
+    public int getPointsRequiredToLevelUp(String userId){
+        HashMap<String,Integer> skillLevels = this.getSkillLevels(userId);
+        int totalLevels = 0;
+        for(String s: skillLevels.keySet()){
+            totalLevels += skillLevels.get(s);
+        }
+        int result = 10;
+        switch(totalLevels){
+            case 0: result = 10;
+            break;
+            case 1: result = 20;
+            break;
+            case 2: result = 30;
+            break;  
+            case 3: result = 40;
+            break;
+            case 4: result = 60;
+            break;
+            case 5: result = 80;
+            break;
+            case 6: result = 110;
+            break;
+            case 7: result = 160;
+            break;
+            case 8: result = 250;
+            break;
+            case 9: result = 420;
+            break;
+            case 10: result = 720;
+            break;
+        }
+        return result;
+    }
+    
+    public static boolean updateUserLevels(String userId, String skillType){
+        boolean success = false;
+        try(Connection conn = ConnectionManager.getConnection();){
+            PreparedStatement stmt = conn.prepareStatement("UPDATE USERS SET ? = ? + 1 WHERE Nric LIKE ?");
+            stmt.setString(1, skillType);
+            stmt.setString(2, skillType);
+            stmt.setString(3, userId);
+            int updatedRows = stmt.executeUpdate();
+            if(updatedRows == 1){
+                success = true;
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return success;
     }
 }

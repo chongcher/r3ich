@@ -13,6 +13,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="style.css" type="text/css">
         <title>Edit Group Members</title>
     </head>
     <body>
@@ -27,19 +28,37 @@
             UserDAO userDAO = (UserDAO) session.getAttribute("userDAO");
             ArrayList<User> users = userDAO.getUsersByClass(selectedClass);
         %>
-        <h2>Group Name: <%= selectedGroup %></h2>
-        <form action="editGroupMembersServlet" method="post">
-            <input type="hidden" name="selectedClass" value=<%="\"" + selectedClass + "\""%>>
-            <input type="hidden" name="selectedGroup" value=<%="\"" + selectedGroup + "\""%>>
-        <%
-            for(User u: users){
-                boolean currentlyInGroup = u.getGroupList().contains(selectedGroup);
-        %>
-        <input type="checkbox" name="updatedMembers[]" value=<%= "\"" + u.getNric() + "\""%> <% if(currentlyInGroup) out.print("checked");%>><%= u.getName()%></br>
-        <%        
-            }
-        %>
-            <button type="submit">Update group</button>
-        </form>
+        <div class="main">
+            <form action="editGroupMembersServlet" method="post">
+                <input type="hidden" name="selectedClass" value=<%="\"" + selectedClass + "\""%>>
+                <input type="hidden" name="selectedGroup" value=<%="\"" + selectedGroup + "\""%>>
+                <table>
+                    <tr>
+                        <td class="centerd" colspan="2"><h2>Group Name: <%= selectedGroup %></h2></td>
+                    </tr>
+                    <%
+                        for(User u: users){
+                            boolean currentlyInGroup = u.getGroupList().contains(selectedGroup);
+                    %>
+                    <tr>
+                        <td class="alignRight">
+                            <input type="checkbox" name="updatedMembers[]" value=<%= "\"" + u.getNric() + "\""%> <% if(currentlyInGroup) out.print("checked");%>>
+                        </td>
+                        <td class="alignLeft"><%=u.getName()%></td>
+                    </tr>
+                    <%        
+                        }
+                    %>
+                    <tr>
+                        <td class="centered" colspan="2"><button type="submit">Update group</button></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <div class="footer">
+            <form action="dashboard.jsp" method="post">
+                    <button type="submit">Back to dashboard</button>
+            </form>
+        </div>
     </body>
 </html>

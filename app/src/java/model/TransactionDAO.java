@@ -63,6 +63,33 @@ public class TransactionDAO {
         return success;
     }
     
+    public boolean levelUp(String requestStaffID,String requestUserID, int requestDelta, String skillType,DateTime requestTimestamp) throws SQLException{
+        boolean success = false;
+        try(Connection conn = ConnectionManager.getConnection();){
+            conn.setAutoCommit(false);
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO TRANSACTION_DETAILS (`Staff`, `User`, `Delta`, `Reason`, `Transaction_DateTime`) VALUES (?, ?, ?, ?, ?);");
+            stmt.setString(1, requestStaffID);
+            stmt.setString(2, requestUserID);
+            stmt.setInt(3, requestDelta);
+            stmt.setString(4, "Level up: " + skillType);
+            DateTimeFormatter dtf = DateTimeFormat.forPattern("Y-MM-d HH:mm:ss");
+            stmt.setString(5, requestTimestamp.toString(dtf));
+            if(stmt.executeUpdate() == 1) success = true;
+            if(!(success && UserDAO.updateUserLevels(requestUserID, skillType))){
+                conn.rollback();
+                return false;
+            }
+            else{
+                conn.commit();
+                conn.setAutoCommit(false);
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return success;
+    }
+    
     public int getTotalPoints(String userID){
         int totalPoints = 0;
         try(Connection conn = ConnectionManager.getConnection();){

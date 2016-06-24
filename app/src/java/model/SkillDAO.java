@@ -34,9 +34,6 @@ public class SkillDAO {
                 String description = rs.getString(1);
                 String type = rs.getString(2);
                 int level = rs.getInt(3);
-                System.out.println("SkillDAO1: " + description);
-                System.out.println("SkillDAO2: " + type);
-                System.out.println("SkillDAO3: " + level);
                 if(!skillTree.containsKey(type)){
                     ArrayList<Skill> temp = new ArrayList<Skill>();
                     temp.add(new Skill(type, level, description));

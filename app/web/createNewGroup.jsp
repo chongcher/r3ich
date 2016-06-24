@@ -13,39 +13,54 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="style.css" type="text/css">
         <title>Create New Group</title>
     </head>
     <body>
-        <%
-            String selectedClass = (String) request.getParameter("selectedClass");
-            if(null == selectedClass || selectedClass == ""){
-                session.setAttribute("displayMessage", "Please select a class!");
-                response.sendRedirect("dashboard.jsp");
-                return;
-            }
-            UserDAO userDAO = (UserDAO) session.getAttribute("userDAO");
-            ArrayList<User> users = userDAO.getUsersByClass(selectedClass);
-        %>
-        <form action="createNewGroup" method="post">
-            <input type="hidden" value=<%=selectedClass%> name="selectedClass">
-            <table>
-                <tr>
-                    <td>Subject</td>
-                    <td><input name="subject" type="hidden" value="Maths">Maths</td>
-                </tr>
-                <tr>
-                    <td>Group name</td>
-                    <td><input name="groupName" type="text"></td>
-                </tr>
-            </table>
+        <div class="main">
             <%
-                for(User u: users){
-            %>
-                <input name="members[]" type="checkbox" value=<%= u.getNric() %>><%= u.getName() %></input></br>
-            <%
+                String selectedClass = (String) request.getParameter("selectedClass");
+                if(null == selectedClass || selectedClass == ""){
+                    session.setAttribute("displayMessage", "Please select a class!");
+                    response.sendRedirect("dashboard.jsp");
+                    return;
                 }
+                UserDAO userDAO = (UserDAO) session.getAttribute("userDAO");
+                ArrayList<User> users = userDAO.getUsersByClass(selectedClass);
             %>
-            <button type="submit">Create group</button>
-        </form>
+            <form action="createNewGroup" method="post">
+                <input type="hidden" value=<%=selectedClass%> name="selectedClass">
+                <table>
+                    <tr>
+                        <td class="alignRight">Subject: </td>
+                        <td class="alignLeft"><input name="subject" type="hidden" value="Maths">Maths</td>
+                    </tr>
+                    <tr>
+                        <td class="alignRight">Group name: </td>
+                        <td class="alignLeft"><input name="groupName" type="text"></td>
+                    </tr>
+                    <%
+                        for(User u: users){
+                    %>
+                    <tr>
+                        <td class="alignRight">
+                            <input name="members[]" type="checkbox" value=<%= u.getNric() %>></input>
+                        </td>
+                        <td class="alignLeft"><%= u.getName() %></td>
+                    </tr>
+                    <%
+                        }
+                    %>
+                    <tr>
+                        <td class="centered" colspan="2"><button type="submit">Create group</button></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <div class="footer">
+            <form action="dashboard.jsp" method="post">
+                    <button type="submit">Back to dashboard</button>
+            </form>
+        </div>
     </body>
 </html>
