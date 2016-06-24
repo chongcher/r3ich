@@ -35,7 +35,7 @@
             for(User u: users){
                 boolean currentlyInGroup = u.getGroupList().contains(selectedGroup);
         %>
-        <input type="checkbox" name="updatedMembers[]" value=<%= "\"" + u.getNric() + "\""%> <% if(currentlyInGroup) out.print("checked");%>><%= u.getName()%></option></br>
+        <input type="checkbox" name="updatedMembers[]" value=<%= "\"" + u.getNric() + "\""%> <% if(currentlyInGroup) out.print("checked");%>><%= u.getName()%></br>
         <%        
             }
         %>

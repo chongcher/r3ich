@@ -18,10 +18,10 @@ import utility.ConnectionManager;
  * @author chiachongcher
  */
 public class StaffDAO {
-    private ArrayList<Staff> staff;
+    private ArrayList<Staff> staffList;
     
     public StaffDAO(){
-        staff = readDatabase();
+        staffList = readDatabase();
     }
     
     private ArrayList<Staff> readDatabase(){
@@ -46,6 +46,10 @@ public class StaffDAO {
             e.printStackTrace();
         }
         return staff;
+    }
+    
+    public ArrayList<Staff> getAllStaff(){
+        return staffList;
     }
     
     private boolean isPasswordExpired(){
@@ -97,7 +101,7 @@ public class StaffDAO {
     }
 
     public Staff retrieveStaff(String staffId) {
-        for(Staff s: staff){
+        for(Staff s: staffList){
             if(staffId.equals(s.getNric())){
                 return s;
             }
@@ -149,6 +153,61 @@ public class StaffDAO {
             stmt.setString(4, BCrypt.hashpw(newCandidate, BCrypt.gensalt()));
             DateTimeFormatter dtf = DateTimeFormat.forPattern("Y-M-d");
             stmt.setString(5, DateTime.now().toString(dtf));
+            updatedRows = stmt.executeUpdate();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return (1 == updatedRows);
+    }
+    
+    public ArrayList<String> getAssignedClasses(String staffId){
+        ArrayList<String> assignedClasses = new ArrayList<String>();
+        try(Connection conn = ConnectionManager.getConnection();){
+            PreparedStatement stmt = conn.prepareStatement("SELECT Classes FROM STAFF WHERE Nric LIKE ?");
+            stmt.setString(1, staffId);
+            ResultSet rs = stmt.executeQuery();
+            try{
+                while(rs.next()){
+                    String[] result = rs.getString(1).split(",");
+                    for(String s: result){
+                        if(!assignedClasses.contains(s.trim())){
+                            assignedClasses.add(s.trim());
+                        }
+                    }
+                }
+            }
+            catch(Exception e){
+                return assignedClasses;
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return assignedClasses;
+    }
+    
+    public boolean updateAssignedClasses(String staffId, ArrayList<String> assignedClasses){
+        String classes = "";
+        for(String s: assignedClasses){
+            if(!classes.equals("")){
+                classes += ",";
+                classes += "s";
+            }
+            else{
+                classes += s;
+            }
+        }
+        int updatedRows = 0;
+        try(Connection conn = ConnectionManager.getConnection();){
+            PreparedStatement stmt = conn.prepareStatement("UPDATE STAFF SET Classes = ? WHERE Nric LIKE ?");
+            if(assignedClasses.size() > 0){
+                stmt.setString(1, classes);
+            }
+            else{
+                stmt.setString(1, "null");
+            }
+            stmt.setString(2, staffId);
             updatedRows = stmt.executeUpdate();
         }
         catch (SQLException e){

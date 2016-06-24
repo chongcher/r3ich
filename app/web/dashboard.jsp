@@ -69,8 +69,16 @@
             </form>
         </div>
         <div>
-            <form action="assignGroupToStaff.jsp" method="post">
-                <button type="submit">Add Student</button>
+            <form action="editStaffClasses.jsp" method="post">
+                <select name="selectedStaff">
+                    <%
+                        StaffDAO staffDAO = (StaffDAO) session.getAttribute("staffDAO");
+                        for(Staff s: staffDAO.getAllStaff()){
+                            out.println("<option value='" + s.getNric() + "'>" + s.getSalutation() + " " + s.getName() + "</option>");
+                        }
+                    %>
+                </select>
+                <button type="submit">Assign Class to Staff</button>
             </form>
         </div>
         <div>

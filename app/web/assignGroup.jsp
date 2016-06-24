@@ -8,6 +8,7 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="model.UserDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@include file="security.jsp" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -25,8 +26,6 @@
             UserDAO userDAO = (UserDAO) session.getAttribute("userDAO");
             ArrayList<User> users = userDAO.getUsersByClass(selectedClass);
             ArrayList<String> classGroups = userDAO.getGroupsByClass(selectedClass);
-            //get all groups for this class
-            //add button to create new group for this class
         %>
         <form action="assignGroups" method="post">
             <select name="selectedGroup">

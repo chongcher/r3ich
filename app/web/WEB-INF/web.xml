@@ -32,6 +32,10 @@
         <servlet-name>editGroupMembersServlet</servlet-name>
         <servlet-class>controller.editGroupMembersServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>editStaffClassesServlet</servlet-name>
+        <servlet-class>controller.editStaffClassesServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>newTransactionServlet</servlet-name>
         <url-pattern>/newTransaction</url-pattern>
@@ -63,6 +67,10 @@
     <servlet-mapping>
         <servlet-name>editGroupMembersServlet</servlet-name>
         <url-pattern>/editGroupMembersServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>editStaffClassesServlet</servlet-name>
+        <url-pattern>/editStaffClassesServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

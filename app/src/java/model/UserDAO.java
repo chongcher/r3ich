@@ -297,4 +297,16 @@ public class UserDAO {
         }
         return rankedClassList;
     }
+    
+    public ArrayList<String> getAllGroups(){
+        ArrayList<String> allGroups = new ArrayList<String>();
+        for(User u: userList){
+            for(String userGroup: u.getGroupList()){
+                if(!allGroups.contains(userGroup)){
+                    allGroups.add(userGroup);
+                }
+            }
+        }
+        return allGroups;
+    }
 }

@@ -25,22 +25,24 @@
         %>
         <div>
             <h2><%=type%></h2>
-            <table>
-                <tr>
-                    <td>Level</td>
-                    <td>Description</td>
-                </tr>
-        <%
-                for(Skill s: skills){
-        %>
-                <tr>
-                    <td><%= s.getLevel() %></td>
-                    <td><%= s.getDescription() %></td>
-                </tr>
-        <%
-                }
-        %>
-            </table>
+            <p>
+                <table>
+                    <tr>
+                        <td>Level</td>
+                        <td>Description</td>
+                    </tr>
+            <%
+                    for(Skill s: skills){
+            %>
+                    <tr>
+                        <td><%= s.getLevel() %></td>
+                        <td><%= s.getDescription() %></td>
+                    </tr>
+            <%
+                    }
+            %>
+                </table>
+            </p>
         </div>
         <%
             }
